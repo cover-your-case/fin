@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Patient Past Medical, Social &amp; Family History Survey, Reactjs Survey Library Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.2.5/babel.min.js"></script>
+    <script src="https://surveyjs.azureedge.net/1.0.71/survey.react.js"></script>
+    <link href="https://surveyjs.azureedge.net/1.0.71/survey.css" type="text/css" rel="stylesheet" />
+    <style type='text/css'>
+
+
+
+    </style>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/dependencyLibs/inputmask.dependencyLib.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/inputmask.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/inputmask.extensions.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/inputmask.numeric.extensions.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/inputmask.date.extensions.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/inputmask.phone.extensions.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/phone-codes/phone.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/phone-codes/phone-be.js"></script>
+    <script src="https://unpkg.com/inputmask@3.3.11/dist/inputmask/phone-codes/phone-ru.js"></script>
+    <script src="https://unpkg.com/surveyjs-widgets/surveyjs-widgets.js"></script>
+
+</head>
+
+<body>
+    <div id="surveyElement">
+    </div>
+    <div id="surveyResult"></div>
+
+    <script type="text/babel">
+
+
+
+        Survey.StylesManager.applyTheme("default");
+    
+
+
+var json ={
+ title: "Case Name",
+ pages: [
+  {
+   name: "Submit to Requesting Attorney",
+   elements: [
+    {
+     type: "dropdown",
+     name: "resultOfCourtCase",
+     title: "Outcome: ",
+     isRequired: true,
+     choices: [
+      "Continued",
+      "Dismissed",
+      "Judgement"
+     ]
+    },
+    {
+     type: "text",
+     name: "Time",
+     visibleIf: "{resultOfCourtCase} = \"Continued\"",
+     title: "Time",
+     isRequired: true,
+     inputType: "datetime-local"
+    },
+    {
+     type: "comment",
+     name: "caseResult ",
+     title: "Case Result ",
+     isRequired: true
+    },
+    {
+     type: "file",
+     name: "uploadDocument",
+     title: "Completed Documents",
+     isRequired: true,
+     maxSize: 0
+    }
+   ],
+   title: "Case Form"
+  }
+ ],
+ sendResultOnPageNext: true,
+ showQuestionNumbers: "off",
+ showProgressBar: "top"
+}
+window.survey = new Survey.Model(json);
+
+
+survey.onComplete.add(function(result) {
+    document.querySelector('#surveyResult').innerHTML = "result: " + JSON.stringify(result.data);
+});
+
+var storageName = "survey_patient_history";
+function saveSurveyData(survey) {
+    var data = survey.data;
+    data.pageNo = survey.currentPageNo;
+    window.localStorage.setItem(storageName, JSON.stringify(data));
+}
+survey.onPartialSend.add(function(survey){
+    saveSurveyData(survey);
+});
+survey.onComplete.add(function(survey, options){
+    saveSurveyData(survey);
+});
+
+survey.sendResultOnPageNext = true;
+var prevData = window.localStorage.getItem(storageName) || null;
+if(prevData) {
+    var data = JSON.parse(prevData);
+    survey.data = data;
+    if(data.pageNo) {
+        survey.currentPageNo = data.pageNo;
+    }
+}
+ReactDOM.render(<Survey.Survey model={survey}  />, document.getElementById("surveyElement"));
+
+
+</script>
+
+</body>
+
+</html>
