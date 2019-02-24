@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Patient Past Medical, Social &amp; Family History Survey, Reactjs Survey Library Example</title>
+    <title>Case Name Page Four</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/jquery"></script>
     <script src="https://unpkg.com/react@15/dist/react.js"></script>
@@ -42,6 +42,7 @@
 
 
 var json ={
+ completedHtml: "We have recieved your court documents. We will be in touch with your payments in 1-5 business days.", 
  title: "Case Name",
  pages: [
   {
@@ -91,7 +92,8 @@ window.survey = new Survey.Model(json);
 
 
 survey.onComplete.add(function(result) {
-    document.querySelector('#surveyResult').innerHTML = "result: " + JSON.stringify(result.data);
+    // document.querySelector('#surveyResult').innerHTML = "result: " + JSON.stringify(result.data);
+    console.log(result.data);//results from data prints to DOM, don't forget 
 });
 
 var storageName = "survey_patient_history";
